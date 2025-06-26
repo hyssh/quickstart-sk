@@ -54,7 +54,7 @@ Response will be like
 ```text
 {
   "user_input":"Use Markdown format",
-  "thread_id": "thread_oRSbFEB4JqFzv1XVL1ZwQlPU",
-  "agent_id": "asst_qdaliOqfggASmCaGqOFz9cRj"
+  "thread_id": "thread_Jeg8fCvvNlfk9CTUQQohZvuY",
+  "agent_id": "asst_LuzQe28Sa9yNh2J9zRpA6HN8"
 }
 ```
