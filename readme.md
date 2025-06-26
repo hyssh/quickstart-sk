@@ -29,13 +29,24 @@ Example command
 python -m sample-server.azureaisearch
 ```
 
-## Post samples
+## Start FastAPI
+Example command
+```bash
+uvicorn app:app --port 8091
+```
+
+
+## Test 
 
 1. Initial call 
 
+Use a tool or code to make API call
+
+Use folloing in the body of the request
+
 ```text
 {
-  "user_input":"List controls of PCI DSS"
+  "user_input":"List controls for PCI DSS"
 }
 ```
 
@@ -50,6 +61,8 @@ Response will be like
 
 
 2. And once you see thread_id and agent_id use them for the next call
+
+Copy both `thread_id` and `agent_id` and attach them to the next API call
 
 ```text
 {
