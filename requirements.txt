@@ -8,3 +8,4 @@ azure-ai-ml==1.27.1
 azure-ai-projects==1.0.0b11
 azure-ai-resources==1.0.0b9
 pyodbc==5.2.0
+chainlit

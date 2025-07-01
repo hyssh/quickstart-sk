@@ -1,0 +1,1 @@
+start cmd /k "conda activate sk && python ./mcpservers/weather.py" && start cmd /k "conda activate sk && python ./mcpservers/localtime.py" && start cmd /k "conda activate sk &&  python ./mcpservers/azuredataexproler.py" && start cmd /k "conda activate sk &&  python ./backend/server.py" && start cmd /k "conda activate sk &&  chainlit run ./frontend/app.py" 
