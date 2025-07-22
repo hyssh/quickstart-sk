@@ -131,4 +131,8 @@ async def handle_message(message: cl.Message):
         await msg.update()
 
 if __name__ == "__main__":
+    print("*"*50)
+    print("Starting Chainlit server")
+    print("This server is responsible for handling requests to the Chainlit frontend.")
+    print("*"*50)
     cl.run(host="0.0.0.0", port=8081)

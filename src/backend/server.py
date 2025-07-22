@@ -29,13 +29,7 @@ class ChatRequest(BaseModel):
     thread_id: Optional[str] = None    
     chat_history: Optional[ChatHistory] = None
 
-AGENT_NAME = "MCP-Demo-Agent"   
-
-agent_settings = AzureAIAgentSettings(
-    endpoint=os.environ.get("PROJECT_ENDPOINT"),
-    model_deployment_name=os.environ.get("MODEL_DEPLOYMENT_NAME") or "gpt-4.1"
-)
-
+AGENT_NAME = "AI-Agent-with-MCP"   
 
 @app.post("/reset_agent_thread_id")
 async def delete_agent_thread(agent_id:Optional[str] = None, thread_id:Optional[str] = None):
@@ -111,7 +105,7 @@ async def chat(request: ChatRequest):
             agent = AzureAIAgent(
                 client=client,
                 definition = await client.agents.create_agent(
-                    model=agent_settings.model_deployment_name,
+                    model=os.environ.get("AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME"),
                     name=AGENT_NAME,
                     description="An agent that can answer questions about system monitoring, weather, and current time.",
                     instructions="You are an assistant Agent for answering questions about system monitoring, weather, and current time. You can use the SystemLogRepository plugin to log system events and retrieve logs. Use the Weather plugin to get current weather information and the GetSystemLocalTime plugin to retrieve the current system time.",
@@ -175,5 +169,8 @@ async def chat(request: ChatRequest):
 
 if __name__ == "__main__":
     import uvicorn
-
+    print("*"*50)
+    print("Starting Semantic Kernel server")
+    print("This server is responsible for handling requests to the Semantic Kernel.")
+    print("*"*50)
     uvicorn.run(app, host="0.0.0.0", port=8091, log_level="info")

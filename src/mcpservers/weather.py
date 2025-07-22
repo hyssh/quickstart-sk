@@ -93,6 +93,10 @@ async def get_forecast(latitude: float, longitude: float) -> str:
 
 if __name__ == "__main__":
     # Initialize and run the server
+    print("*"*50)
+    print("Starting MCP server")
+    print("This server is responsible for getting weather data from the NWS API.")
+    print("*"*50)
     mcp.settings.host = "0.0.0.0"
     mcp.settings.port = 8086
 

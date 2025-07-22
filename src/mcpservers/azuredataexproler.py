@@ -1,10 +1,7 @@
-#!/usr/bin/env python
-
 import os
 import json
 from typing import Any, Dict, List, Optional, Union
 from dataclasses import dataclass
-
 import dotenv
 from mcp.server.fastmcp import FastMCP
 from azure.identity import DefaultAzureCredential, WorkloadIdentityCredential
@@ -122,7 +119,10 @@ async def get_table_details(table_name: str) -> List[Dict[str, Any]]:
 
 
 if __name__ == "__main__":
+    print("*"*50)
     print(f"Starting Azure Data Explorer MCP Server...")
+    print("This server is responsible for getting data from the Azure Data Explorer.")
+    print("*"*50)
     mcp.settings.host = "0.0.0.0"
     mcp.settings.port = 8089
     mcp.run("sse")
