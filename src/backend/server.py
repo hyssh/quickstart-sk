@@ -10,7 +10,7 @@ from semantic_kernel.contents.chat_history import ChatHistory
 from semantic_kernel.contents.chat_message_content import ChatMessageContent
 from semantic_kernel.contents.text_content import TextContent
 from semantic_kernel.contents.utils.author_role import AuthorRole
-from semantic_kernel.connectors.mcp import MCPSsePlugin
+from semantic_kernel.connectors.mcp import MCPStreamableHttpPlugin
 from pydantic import BaseModel
 
 logging.basicConfig(level=logging.ERROR)
@@ -81,20 +81,21 @@ async def chat(request: ChatRequest):
         DefaultAzureCredential() as creds,
         AzureAIAgent.create_client(credential=creds) as client,
         # 2. Create the MCP plugins
-        MCPSsePlugin(
+        MCPStreamableHttpPlugin(
             name="Weather",
             description="Get current weather information",
-            url="http://localhost:8086/sse"
+            url="http://localhost:8086/mcp"
         ) as current_weather_plugin,
-        MCPSsePlugin(
+        MCPStreamableHttpPlugin(
             name="GetSystemLocalTime",
             description="System local time plugin for retrieving current system time",
-            url="http://localhost:8087/sse"
+            url="http://localhost:8087/mcp"
         ) as current_time_plugin,
-        MCPSsePlugin(
+        MCPStreamableHttpPlugin(
             name="SystemLogRepository",
             description="System log repository for monitoring and debugging",
-            url="http://localhost:8089/sse"
+            
+            url="http://localhost:8089/mcp"
         ) as sys_log_ads_plugin,
     ): 
         code_interpreter = CodeInterpreterTool()
