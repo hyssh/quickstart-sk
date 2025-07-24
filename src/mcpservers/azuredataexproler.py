@@ -125,4 +125,4 @@ if __name__ == "__main__":
     print("*"*50)
     mcp.settings.host = "0.0.0.0"
     mcp.settings.port = 8089
-    mcp.run("sse")
+    mcp.run("streamable-http")

@@ -15,8 +15,6 @@ from semantic_kernel.connectors.mcp import MCPStreamableHttpPlugin
 from pydantic import BaseModel
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from memory.faq_memory import FAQMemory
-from semantic_kernel.functions import kernel_function
-from memory.faq_plugin import FAQPlugin
 
 
 logging.basicConfig(level=logging.ERROR)
@@ -35,14 +33,9 @@ class ChatRequest(BaseModel):
     thread_id: Optional[str] = None    
     chat_history: Optional[ChatHistory] = None
 
-
 AGENT_NAME = "AI-Agent-with-MCP"   
 faq_memory = FAQMemory()
 
-@kernel_function(
-    description="Get the best answer for a specific question from the FAQ database, it must be used for any question",
-    name="get_faq_memory"
-)
 async def get_faq_memory(query: str = None, category: str = None, limit: int = 1, score: float = 0.21):
     """Get the FAQ memory instance."""
     if query is not None:
@@ -52,7 +45,6 @@ async def get_faq_memory(query: str = None, category: str = None, limit: int = 1
     else:
         results = None
     return results
-
 
 @app.post("/reset_agent_thread_id")
 async def delete_agent_thread(agent_id:Optional[str] = None, thread_id:Optional[str] = None):
@@ -96,7 +88,15 @@ async def chat(request: ChatRequest):
 
     logging.info("User input: %s", user_input)
     logging.info("Agent ID: %s", agent_id)
-    logging.info("Thread ID: %s", thread_id)      
+    logging.info("Thread ID: %s", thread_id)
+
+    cache_search_result = await get_faq_memory(query=user_input, category=None, limit=1, score=0.25)
+
+    logging.info("Cache search result: %s", cache_search_result)
+    if cache_search_result is not None:
+        return {    
+            "response": cache_search_result[0].answer
+        }        
 
     async with (
         # 1. Login to Azure and create a Azure AI Project Client
@@ -121,30 +121,6 @@ async def chat(request: ChatRequest):
         ) as sys_log_ads_plugin,
     ): 
         code_interpreter = CodeInterpreterTool()
-
-        cache_search_result = await get_faq_memory(query=user_input, category=None, limit=1, score=0.25)
-
-        logging.info("Cache search result: %s", cache_search_result)
-        if cache_search_result is not None:
-            thread = AzureAIAgentThread(client=client, thread_id=thread_id)
-            # add user question and answer from the cache to the thread
-            await thread.on_new_message(
-                ChatMessageContent(
-                    role=AuthorRole.USER,
-                    items=[TextContent(text=user_input)]
-                )            
-            )
-            await thread.on_new_message(
-                ChatMessageContent(
-                    role=AuthorRole.ASSISTANT,
-                    items=[TextContent(text=cache_search_result[0].answer)]
-                )
-            )
-            return {    
-                "response": cache_search_result[0].answer,
-                "thread_id": thread_id,
-                "agent_id": agent_id
-            }  
         
         if agent_id is None:
             # Initial call
