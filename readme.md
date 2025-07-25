@@ -12,14 +12,16 @@ This project demonstrates a Semantic Kernel implementation with FastAPI backend,
 
 ### 1. Environment Setup
 
-Create a conda environment and install dependencies:
+Create a Python venv at the root of the project and install dependencies:
 
 ```bash
-# Create conda environment
-conda create -n sk python=3.10 -y
+# Create venv at project root
+python -m venv .venv
 
-# Activate environment
-conda activate sk
+# Activate venv (Windows)
+.venv\Scripts\activate
+# Activate venv (Unix/Linux/Mac)
+source .venv/bin/activate
 
 # Install requirements
 pip install -r requirements.txt
@@ -56,28 +58,14 @@ Navigate to the `src` directory and use the Python launcher:
 
 ```bash
 cd src
-
-# Use default conda environment (sk)
 python launcher.py
-
-# Use custom conda environment
-python launcher.py --env your_env_name
-
-# Or set environment variable
-set CONDA_ENV=your_env_name && python launcher.py  # Windows
-export CONDA_ENV=your_env_name && python launcher.py  # Unix/Linux
 ```
 
 #### Option B: Enhanced Batch Script (Windows)
 
 ```bash
 cd src
-
-# Use default environment
 run_chainlit.cmd
-
-# Use custom environment
-set CONDA_ENV=your_env_name && run_chainlit.cmd
 ```
 
 #### Option C: Manual Start (Individual Components)
