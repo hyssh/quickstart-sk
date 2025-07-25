@@ -9,39 +9,21 @@ from collections.abc import Sequence
 from dataclasses import dataclass, field
 from typing import Annotated, Optional, List
 from uuid import uuid4
-
+from dotenv import load_dotenv
 from semantic_kernel.connectors.ai.open_ai import AzureTextEmbedding
 # InMemoryCollection is used for in-memory vector store
 from semantic_kernel.connectors.in_memory import InMemoryCollection
 from semantic_kernel.data.vector import VectorStoreField, vectorstoremodel
 
-# InMemoryCollection is used for in-memory vector store
-# from semantic_kernel.connectors.memory import CosmosNoSqlCollection
-# from semantic_kernel.data.vector import (
-#     SearchType,
-#     VectorSearchProtocol,
-#     VectorStoreCollection,
-#     VectorStoreField,
-#     vectorstoremodel,
-# )
-
 # This is an example of a vector store and collection using Azure OpenAI embeddings
 # Make sure to have your environment variables set up or provide credentials directly
 # Using Azure OpenAI endpoint from your Azure AI Foundry project
 
+load_dotenv()
 # Load environment variables or use direct configuration
 azure_openai_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
 azure_openai_api_key = os.getenv("AZURE_OPENAI_API_KEY")
 embedding_deployment = os.getenv("EMBEDDING_DEPLOYMENT_NAME")
-# azure_cosmosdb_nosql_url = os.getenv("AZURE_COSMOS_DB_NO_SQL_URL", "https://aivectorstore.documents.azure.com:443/")
-# azure_cosmosdb_nosql_database_name = os.getenv("AZURE_COSMOS_DB_NO_SQL_DATABASE_NAME", "quickstartmemory")
-# azure_cosmosdb_nosql_key = os.getenv("AZURE_COSMOS_DB_NO_SQL_KEY")
-
-# cosmos_client = CosmosClient(
-#     url=azure_cosmosdb_nosql_url,
-#     credential=azure_cosmosdb_nosql_key,)
-# # "AccountEndpoint=https://aivectorstore.documents.azure.com:443/;AccountKey=)
-
 
 embedder = AzureTextEmbedding(
     api_key=azure_openai_api_key,

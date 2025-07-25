@@ -10,13 +10,8 @@ from typing import Annotated, Optional, List
 from uuid import uuid4
 
 from semantic_kernel.connectors.ai.open_ai import AzureTextEmbedding
-# InMemoryCollection is used for in-memory vector store
-# from semantic_kernel.connectors.in_memory import InMemoryCollection
-# from semantic_kernel.data.vector import VectorStoreField, vectorstoremodel
 
-# InMemoryCollection is used for in-memory vector store
 from azure.identity import DefaultAzureCredential
-# from semantic_kernel.connectors.memory import CosmosNoSqlCollection
 from semantic_kernel.connectors.azure_cosmos_db import CosmosNoSqlCollection, CosmosNoSqlSettings
 from semantic_kernel.data.vector import (
     SearchType,
@@ -29,6 +24,9 @@ from semantic_kernel.data.vector import (
 # This is an example of a vector store and collection using Azure OpenAI embeddings
 # Make sure to have your environment variables set up or provide credentials directly
 # Using Azure OpenAI endpoint from your Azure AI Foundry project
+
+from dotenv import load_dotenv  
+load_dotenv()  # Load environment variables from .env file
 
 # Load environment variables or use direct configuration
 azure_openai_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
@@ -45,6 +43,7 @@ CosmosNoSqlSettings(
     url=azure_cosmosdb_nosql_url,
     database_name=azure_cosmosdb_nosql_database_name,
 )
+
 
 # cosmos_client = CosmosClient(
 #     url=azure_cosmosdb_nosql_url,
@@ -77,8 +76,8 @@ embedder = AzureTextEmbedding(
 class DataModel:
     content: Annotated[str, VectorStoreField("data")]
     id: Annotated[str, VectorStoreField("key")] = field(default_factory=lambda: str(uuid4()))
-    vector: Annotated[
-        list[float] | None,
+    embedding: Annotated[
+        list[float] | str | None,
         VectorStoreField('vector', dimensions=1536, distance_function="cosine_similarity", index_kind="disk_ann"),
     ] = None
     question: Annotated[str, VectorStoreField("data", is_full_text_indexed=True)] = ""
@@ -101,23 +100,34 @@ def load_records_from_json():
         tags_str = ", ".join(item.get("tags", [])) if item.get("tags") else ""
 
         # Get question and answer fields, always coerce None to empty string
-        question = item.get("question") or ""
-        answer = item.get("answer") or ""
+        question = item.get("question", "") or ""
+        answer = item.get("answer", "") or ""
 
-        # Create content by combining question and answer for vector search
-        content = f"Question: {question}\nAnswer: {answer}" if question and answer else question or answer
-        content = content or ""  # Ensure content is never None
+        # Compose content: use item["content"] if present and non-empty, else build from question/answer
+        content = item.get("content", "")
+        if not content or not isinstance(content, str) or not content.strip():
+            if question and answer:
+                content = f"Question: {question}\nAnswer: {answer}"
+            else:
+                content = question or answer or ""
 
-        record = DataModel(
-            content=content,
-            id=item["id"],
-            question=question,
-            answer=answer,
-            category=item.get("category", "general"),
-            tags=tags_str,
-            vector=None  # Always set vector to None so embedding is generated
-        )
-        records.append(record)
+        # Always provide a string id, generate if missing
+        record_id = str(item.get("id") or str(uuid4()))
+
+        # Only add records with non-empty, non-whitespace content
+        if isinstance(content, str) and content.strip():
+            record = DataModel(
+                content=content,
+                id=record_id,
+                question=question,
+                answer=answer,
+                category=item.get("category", "general") or "general",
+                tags=tags_str,
+                # Don't set embedding to None, let the system handle it
+                embedding=[]  # Use empty list instead of None
+            )
+            records.append(record)
+            
     return records
 
 
@@ -149,25 +159,43 @@ class FAQMemory:
             CosmosNoSqlCollection: The initialized collection ready for use.
         """
         if not self._initialized:
-            self.collection = CosmosNoSqlCollection[str, DataModel](
-                record_type=DataModel,
-                # cosmos_client=cosmos_client,
-                url=azure_cosmosdb_nosql_url,
-                key=azure_cosmosdb_nosql_key,                
-                collection_name="starbucksqna",
-                database_name=azure_cosmosdb_nosql_database_name,                
-                create_database=True,
-                embedding_generator=self.embedder,
-            )
-            
-            # Ensure collection exists and add data
-            await self.collection.ensure_collection_exists()
-            
-            # Add records to the collection
-            keys = await self.collection.upsert(self.records)
-            print(f"FAQ Memory initialized with {len(keys)} records")
-            self._initialized = True
-            
+            try:
+                self.collection = CosmosNoSqlCollection[str, DataModel](
+                    record_type=DataModel,
+                    url=azure_cosmosdb_nosql_url,
+                    key=azure_cosmosdb_nosql_key,                
+                    collection_name="starbucksqna",
+                    database_name=azure_cosmosdb_nosql_database_name,                
+                    create_database=True,
+                    embedding_generator=self.embedder,
+                )
+                
+                # Ensure collection exists
+                await self.collection.ensure_collection_exists()
+
+                # Process records in smaller batches to avoid overwhelming the embedder
+                batch_size = 5
+                all_keys = []
+                
+                for i in range(0, len(self.records), batch_size):
+                    batch = self.records[i:i + batch_size]
+                    # Validate batch
+                    valid_batch = [rec for rec in batch if isinstance(rec.content, str) and rec.content.strip()]
+                    if valid_batch:
+                        print(f"Processing batch {i//batch_size + 1} with {len(valid_batch)} records")
+                        try:
+                            batch_keys = await self.collection.upsert(valid_batch)
+                            all_keys.extend(batch_keys)
+                            print(f"Successfully processed batch {i//batch_size + 1}")
+                        except Exception as e:
+                            print(f"Error processing batch {i//batch_size + 1}: {str(e)}")
+                            # Continue with next batch even if this one failed
+                
+                print(f"FAQ Memory initialized with {len(all_keys)} records out of {len(self.records)} total")
+                self._initialized = True
+            except Exception as e:
+                print(f"Error initializing FAQ Memory: {str(e)}")
+                raise
         return self.collection
     
     async def get_collection(self) -> CosmosNoSqlCollection[str, DataModel]:
@@ -198,7 +226,7 @@ class FAQMemory:
         
         # Prepare search options
         options = {
-            "vector_property_name": "vector",
+            "vector_property_name": "embedding",  # Use the correct property name
         }
         
         # Add category filter if specified
@@ -267,7 +295,7 @@ class FAQMemory:
             answer=answer,
             category=category,
             tags=tags_str,
-            vector=None
+            embedding=None
         )
 
         keys = await self.collection.upsert([new_record])

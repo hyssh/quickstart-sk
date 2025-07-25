@@ -1,6 +1,7 @@
 [
   {
     "id": "question_001",
+    "content":"question: What are the most popular Starbucks drinks?\nanswer: The most popular Starbucks drinks include the Caramel Macchiato, Pumpkin Spice Latte (seasonal), Vanilla Latte, Mocha Frappuccino, and the classic Pike Place Roast. These favorites consistently rank at the top of customer orders worldwide.\ncategory: general\ntags: popular, drinks, menu",
     "question": "What are the most popular Starbucks drinks?",
     "answer": "The most popular Starbucks drinks include the Caramel Macchiato, Pumpkin Spice Latte (seasonal), Vanilla Latte, Mocha Frappuccino, and the classic Pike Place Roast. These favorites consistently rank at the top of customer orders worldwide.",
     "category": "general",
@@ -9,6 +10,7 @@
   },
   {
     "id": "question_002",
+    "content": "question: What non-coffee options does Starbucks offer?\nanswer: Starbucks offers many non-coffee options including Teavana teas (hot or iced), hot chocolate, steamed apple juice, refreshers (with real fruit), lemonades, smoothies, and bottled drinks. For those avoiding caffeine entirely, many of these can be ordered caffeine-free.\ncategory: non-coffee\ntags: non-coffee, alternatives, menu",
     "question": "What non-coffee options does Starbucks offer?",
     "answer": "Starbucks offers many non-coffee options including Teavana teas (hot or iced), hot chocolate, steamed apple juice, refreshers (with real fruit), lemonades, smoothies, and bottled drinks. For those avoiding caffeine entirely, many of these can be ordered caffeine-free.",
     "category": "non-coffee",
@@ -17,7 +19,7 @@
   },
   {
     "id": "question_003",
-    "type": "question",
+    "content": "question: What milk alternatives does Starbucks offer?\nanswer: Starbucks offers several milk alternatives: soy milk, almond milk, coconut milk, and oat milk. These can be substituted in any drink for an additional charge, making most drinks customizable for those with dietary restrictions or preferences.\ncategory: dietary\ntags: milk, alternatives, dietary, vegan",
     "question": "What milk alternatives does Starbucks offer?",
     "answer": "Starbucks offers several milk alternatives: soy milk, almond milk, coconut milk, and oat milk. These can be substituted in any drink for an additional charge, making most drinks customizable for those with dietary restrictions or preferences.",
     "category": "dietary",
@@ -26,7 +28,7 @@
   },
   {
     "id": "question_004",
-    "type": "question",
+    "content": "question: What food options are available at Starbucks?\nanswer: Starbucks offers a variety of food items including breakfast sandwiches, oatmeal, bakery items (muffins, scones, croissants), protein boxes, salads, sandwiches, and wraps. Many locations also feature seasonal food items and local specialties. Several vegetarian and vegan options are available as well.\ncategory: food\ntags: food, menu, breakfast, lunch",
     "question": "What food options are available at Starbucks?",
     "answer": "Starbucks offers a variety of food items including breakfast sandwiches, oatmeal, bakery items (muffins, scones, croissants), protein boxes, salads, sandwiches, and wraps. Many locations also feature seasonal food items and local specialties. Several vegetarian and vegan options are available as well.",
     "category": "food",
@@ -35,7 +37,7 @@
   },
   {
     "id": "question_005",
-    "type": "question",
+    "content": "question: What are Starbucks seasonal drinks?\nanswer: Starbucks offers seasonal drinks throughout the year. Fall features the Pumpkin Spice Latte and Salted Caramel Mocha. Winter brings the Peppermint Mocha, Caramel Brulée Latte, and Toasted White Chocolate Mocha. Spring often includes floral and fruit-inspired beverages, while summer features fruity Frappuccinos and refreshers like the Dragon Drink.\ncategory: seasonal\ntags: seasonal, limited, drinks, menu",
     "question": "What are Starbucks seasonal drinks?",
     "answer": "Starbucks offers seasonal drinks throughout the year. Fall features the Pumpkin Spice Latte and Salted Caramel Mocha. Winter brings the Peppermint Mocha, Caramel Brulée Latte, and Toasted White Chocolate Mocha. Spring often includes floral and fruit-inspired beverages, while summer features fruity Frappuccinos and refreshers like the Dragon Drink.",
     "category": "seasonal",
@@ -44,7 +46,7 @@
   },
   {
     "id": "question_006",
-    "type": "question",
+    "content": "question: What is the Starbucks Rewards program?\nanswer: Starbucks Rewards is a loyalty program where members earn Stars for purchases, which can be redeemed for free drinks, food, and merchandise. Members also receive free birthday rewards, exclusive offers, and the ability to order ahead through the mobile app. Different membership tiers offer additional benefits based on yearly spending.\ncategory: rewards\ntags: rewards, loyalty, program",
     "question": "What is the Starbucks Rewards program?",
     "answer": "Starbucks Rewards is a loyalty program where members earn Stars for purchases, which can be redeemed for free drinks, food, and merchandise. Members also receive free birthday rewards, exclusive offers, and the ability to order ahead through the mobile app. Different membership tiers offer additional benefits based on yearly spending.",
     "category": "rewards",
@@ -53,7 +55,7 @@
   },
   {
     "id": "question_007",
-    "type": "question",
+    "content": "question: How can I customize my Starbucks drink?\nanswer: Starbucks drinks can be customized in numerous ways: changing the milk type (whole, 2%, nonfat, or alternatives like almond and oat), adjusting sweetness levels, modifying the number of espresso shots, adding or removing syrups and toppings, and choosing hot or iced preparations. You can also specify temperature preferences and cup size from Tall to Trenta.\ncategory: customization\ntags: customization, personalization, drinks",
     "question": "How can I customize my Starbucks drink?",
     "answer": "Starbucks drinks can be customized in numerous ways: changing the milk type (whole, 2%, nonfat, or alternatives like almond and oat), adjusting sweetness levels, modifying the number of espresso shots, adding or removing syrups and toppings, and choosing hot or iced preparations. You can also specify temperature preferences and cup size from Tall to Trenta.",
     "category": "customization",
@@ -62,7 +64,7 @@
   },
   {
     "id": "question_008",
-    "type": "question",
+    "content": "question: What are Starbucks' cup sizes?\nanswer: Starbucks uses unique names for its cup sizes: Short (8 oz, not listed on the menu but available), Tall (12 oz), Grande (16 oz), Venti (20 oz for hot drinks, 24 oz for cold drinks), and Trenta (31 oz, only available for certain cold beverages).\ncategory: general\ntags: sizes, cups, ordering",
     "question": "What are Starbucks' cup sizes?",
     "answer": "Starbucks uses unique names for its cup sizes: Short (8 oz, not listed on the menu but available), Tall (12 oz), Grande (16 oz), Venti (20 oz for hot drinks, 24 oz for cold drinks), and Trenta (31 oz, only available for certain cold beverages).",
     "category": "general",
@@ -71,7 +73,7 @@
   },
   {
     "id": "question_009",
-    "type": "question",
+    "content": "question: Does Starbucks offer gluten-free options?\nanswer: Starbucks offers some certified gluten-free food items, including the Marshmallow Dream Bar and packaged snacks that are clearly labeled. Most beverages are gluten-free, but customers with celiac disease should be cautious of cross-contamination and should inform baristas about their dietary needs when ordering.\ncategory: dietary\ntags: gluten-free, dietary, food",
     "question": "Does Starbucks offer gluten-free options?",
     "answer": "Starbucks offers some certified gluten-free food items, including the Marshmallow Dream Bar and packaged snacks that are clearly labeled. Most beverages are gluten-free, but customers with celiac disease should be cautious of cross-contamination and should inform baristas about their dietary needs when ordering.",
     "category": "dietary",
@@ -80,7 +82,7 @@
   },
   {
     "id": "question_010",
-    "type": "question",
+    "content": "question: What is the strongest coffee drink at Starbucks?\nanswer: The strongest coffee drink at Starbucks by caffeine content is the Venti Blonde Roast filter coffee with approximately 475mg of caffeine. For espresso-based drinks, a Venti Blonde Caffè Americano with an extra shot contains about 340mg. Customers can also add extra espresso shots to any drink to increase the caffeine content and strength.\ncategory: coffee\ntags: coffee, caffeine, strength",
     "question": "What is the strongest coffee drink at Starbucks?",
     "answer": "The strongest coffee drink at Starbucks by caffeine content is the Venti Blonde Roast filter coffee with approximately 475mg of caffeine. For espresso-based drinks, a Venti Blonde Caffè Americano with an extra shot contains about 340mg. Customers can also add extra espresso shots to any drink to increase the caffeine content and strength.",
     "category": "coffee",
