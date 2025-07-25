@@ -2,3 +2,4 @@
 **__pycache__
 **.pytest_cache
 **.chainlit
+demo_*.cmd

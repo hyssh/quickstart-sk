@@ -36,6 +36,13 @@ Before starting, ensure you have:
 
 ## Setup Instructions
 
+Add AI Search to AI Foundry and run application
+
+### 0. Add AI Search to your AI Foundry
+
+Add AI Search to your AI Foundry by follwing 
+[document](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/how-to/tools/azure-ai-search?tabs=azureaifoundry)
+
 ### 1. Environment Configuration
 
 Create a [`.env`](.env ) file in the project root with the following variables:
