@@ -5,18 +5,16 @@ from fastapi import FastAPI, HTTPException
 from azure.identity.aio import DefaultAzureCredential
 from typing import Optional
 from dotenv import load_dotenv
+from azure.ai.agents.models import AzureAISearchTool
+from azure.ai.projects.models import ConnectionType
 from semantic_kernel.agents import AzureAIAgent, AzureAIAgentThread, AzureAIAgentSettings
-from azure.ai.agents.models import CodeInterpreterTool
 from semantic_kernel.contents.chat_history import ChatHistory
 from semantic_kernel.contents.chat_message_content import ChatMessageContent
 from semantic_kernel.contents.text_content import TextContent
 from semantic_kernel.contents.utils.author_role import AuthorRole
-from semantic_kernel.connectors.mcp import MCPStreamableHttpPlugin
 from pydantic import BaseModel
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from memory.faq_memory import FAQMemory
-from semantic_kernel.functions import kernel_function
-from memory.faq_plugin import FAQPlugin
 
 
 logging.basicConfig(level=logging.ERROR)
@@ -35,14 +33,12 @@ class ChatRequest(BaseModel):
     thread_id: Optional[str] = None    
     chat_history: Optional[ChatHistory] = None
 
+AGENT_NAME = "AI-Agent-rag"   
+AZURE_AI_SEARCH_INDEX_NAME = os.getenv("AZURE_SEARCH_INDEX")
 
-AGENT_NAME = "AI-Agent-with-MCP"   
+ai_agent_settings = AzureAIAgentSettings()
 faq_memory = FAQMemory()
 
-@kernel_function(
-    description="Get the best answer for a specific question from the FAQ database, it must be used for any question",
-    name="get_faq_memory"
-)
 async def get_faq_memory(query: str = None, category: str = None, limit: int = 1, score: float = 0.21):
     """Get the FAQ memory instance."""
     if query is not None:
@@ -52,7 +48,6 @@ async def get_faq_memory(query: str = None, category: str = None, limit: int = 1
     else:
         results = None
     return results
-
 
 @app.post("/reset_agent_thread_id")
 async def delete_agent_thread(agent_id:Optional[str] = None, thread_id:Optional[str] = None):
@@ -96,72 +91,48 @@ async def chat(request: ChatRequest):
 
     logging.info("User input: %s", user_input)
     logging.info("Agent ID: %s", agent_id)
-    logging.info("Thread ID: %s", thread_id)      
+    logging.info("Thread ID: %s", thread_id)
+
+    cache_search_result = await get_faq_memory(query=user_input, category=None, limit=1, score=0.25)
+
+    logging.info("Cache search result: %s", cache_search_result)
+    if cache_search_result is not None:
+        return {    
+            "response": cache_search_result[0].answer
+        }        
+    
+    print("No cache search result found, proceeding with agent response...")
 
     async with (
         # 1. Login to Azure and create a Azure AI Project Client
         DefaultAzureCredential() as creds,
         AzureAIAgent.create_client(credential=creds) as client,
-        # 2. Create the MCP plugins
-        MCPStreamableHttpPlugin(
-            name="Weather",
-            description="Get current weather information",
-            url="http://localhost:8086/mcp"
-        ) as current_weather_plugin,
-        MCPStreamableHttpPlugin(
-            name="GetSystemLocalTime",
-            description="System local time plugin for retrieving current system time",
-            url="http://localhost:8087/mcp"
-        ) as current_time_plugin,
-        MCPStreamableHttpPlugin(
-            name="SystemLogRepository",
-            description="System log repository for monitoring and debugging",
-            
-            url="http://localhost:8089/mcp"
-        ) as sys_log_ads_plugin,
     ): 
-        code_interpreter = CodeInterpreterTool()
+        ai_search_conn_id = ""
+        async for connection in client.connections.list():
+            if connection.type == ConnectionType.AZURE_AI_SEARCH:
+                ai_search_conn_id = connection.id
+                print(f"Found Azure AI Search connection: {connection.id}")
+                break
 
-        cache_search_result = await get_faq_memory(query=user_input, category=None, limit=1, score=0.25)
+        ai_search = AzureAISearchTool(index_connection_id=ai_search_conn_id, index_name=AZURE_AI_SEARCH_INDEX_NAME)
+        print(f"Using Azure AI Search index: {AZURE_AI_SEARCH_INDEX_NAME}")
 
-        logging.info("Cache search result: %s", cache_search_result)
-        if cache_search_result is not None:
-            thread = AzureAIAgentThread(client=client, thread_id=thread_id)
-            # add user question and answer from the cache to the thread
-            await thread.on_new_message(
-                ChatMessageContent(
-                    role=AuthorRole.USER,
-                    items=[TextContent(text=user_input)]
-                )            
-            )
-            await thread.on_new_message(
-                ChatMessageContent(
-                    role=AuthorRole.ASSISTANT,
-                    items=[TextContent(text=cache_search_result[0].answer)]
-                )
-            )
-            return {    
-                "response": cache_search_result[0].answer,
-                "thread_id": thread_id,
-                "agent_id": agent_id
-            }  
-        
         if agent_id is None:
             # Initial call
-            logging.info("Created new plugin: %s", sys_log_ads_plugin.name)
             agent = AzureAIAgent(
                 client=client,
                 definition = await client.agents.create_agent(
                     model=os.environ.get("AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME"),
                     name=AGENT_NAME,
-                    description="An agent that can answer questions about system monitoring, weather, and current time.",
-                    instructions="You are an assistant Agent for answering questions about system monitoring, weather, and current time. You can use the SystemLogRepository plugin to log system events and retrieve logs. Use the Weather plugin to get current weather information and the GetSystemLocalTime plugin to retrieve the current system time.",
+                    description="An agent that can answer questions for user.",
+                    instructions="You are an assistant Agent for answering questions. Your conversation is grounded in the context of the user query and data from search or knowledge base. outside of that. Do not make up answers. If you do not know the answer, say 'I don't know'.",
                     temperature=0.1,
                     top_p=0.1,                            
                 ),
-                plugins=[sys_log_ads_plugin, current_weather_plugin, current_time_plugin],
-                tools=code_interpreter.definitions,
-                tool_resources=code_interpreter.resources
+                tools=ai_search.definitions,
+                tool_resources=ai_search.resources,
+                headers={"x-ms-enable-preview": "true"},
             )
             logging.info("Created new agent: %s", agent.id)
         else:
@@ -170,9 +141,9 @@ async def chat(request: ChatRequest):
             agent = AzureAIAgent(
                 client=client,
                 definition=agent_def,
-                plugins=[sys_log_ads_plugin, current_weather_plugin, current_time_plugin], # Important, it need to be added again
-                tools=code_interpreter.definitions,
-                tool_resources=code_interpreter.resources
+                tools=ai_search.definitions,
+                tool_resources=ai_search.resources,
+                headers={"x-ms-enable-preview": "true"},
             )
             logging.info("Using existing agent: %s", agent.id)
 
