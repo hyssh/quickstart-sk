@@ -16,7 +16,6 @@ from pydantic import BaseModel
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from memory.faq_memory import FAQMemory
 from semantic_kernel.functions import kernel_function
-from memory.faq_plugin import FAQPlugin
 
 
 logging.basicConfig(level=logging.ERROR)
