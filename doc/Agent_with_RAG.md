@@ -28,7 +28,7 @@ The solution consists of these components:
 
 Before starting, ensure you have:
 
-1. **Python Environment**: Python 3.8+ with virtual environment
+1. **Python Environment**: Python 3.10+ with virtual environment
 2. **Azure Resources**:
    - Azure OpenAI or OpenAI API access
    - Azure AI Search index with your knowledge base data
@@ -41,10 +41,13 @@ Before starting, ensure you have:
 Create a [`.env`](.env ) file in the project root with the following variables:
 
 ```
-AZURE_OPENAI_ENDPOINT=https://your-azure-openai.openai.azure.com/
-AZURE_OPENAI_API_KEY=your-api-key
+AZURE_SEARCH_ENDPOINT=https://<your-search>.search.windows.net
+AZURE_SEARCH_API_KEY=<your-search-api-key>
+AZURE_SEARCH_INDEX=<your-search-index>
 AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME=your-model-name
-AZURE_SEARCH_INDEX=your-search-index-name
+AZURE_OPENAI_ENDPOINT=https://<your-openai-resource>.openai.azure.com/
+AZURE_OPENAI_API_KEY=<your-azure-openai-api-key>
+EMBEDDING_DEPLOYMENT_NAME=text-embedding-3-small
 ```
 
 ### 2. Install Dependencies

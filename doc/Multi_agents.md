@@ -37,13 +37,24 @@ pip install -r ../requirements.txt
 Edit the `.env` file at the project root. Example:
 
 ```
-AZURE_SEARCH_ENDPOINT=...
-AZURE_SEARCH_API_KEY=...
-AZURE_SEARCH_INDEX=...
-AZURE_OPENAI_ENDPOINT=...
-AZURE_OPENAI_API_KEY=...
-AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME=...
-AZURE_AI_AGENT_ENDPOINT=...
+# AI Agent
+AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME="gpt-4.1"
+AZURE_AI_AGENT_ENDPOINT="https://<<youraifoundry>>.services.ai.azure.com/api/projects/<<yourproject>>"
+
+# Memeory for Azure OpenAI
+AZURE_OPENAI_ENDPOINT=https://<<youraifoundry>>.openai.azure.com/
+AZURE_OPENAI_API_KEY=<<yourkey>>
+EMBEDDING_DEPLOYMENT_NAME=text-embedding-3-small
+
+# agent rag
+AZURE_SEARCH_ENDPOINT=https://<<youraisearch>>.search.windows.net
+AZURE_SEARCH_API_KEY=<<aisearchkey>>
+AZURE_SEARCH_INDEX=<<yourindexname>>
+
+# MCP Server
+# https://dataexplorer.azure.com/home
+ADX_CLUSTER_URL=https://help.kusto.windows.net/
+ADX_DATABASE=SampleLogs
 ```
 
 ---
