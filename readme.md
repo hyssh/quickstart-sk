@@ -9,11 +9,17 @@ This project demonstrates a Semantic Kernel implementation with FastAPI backend,
 
 ## Quick Start
 
-### 1. Environment Setup
+### 1. Azure CLI Login
 
+Before setting up your environment, make sure you are logged in to Azure CLI:
 
-**Install Az Cli**
-Follow guide in the [Document](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) to install `az cli`
+```bash
+az login
+```
+
+If you haven't installed Azure CLI, follow the [official guide](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest).
+
+### 2. Environment Setup
 
 
 **Environment**
@@ -33,7 +39,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. Configuration
+### 3. Configuration
 
 Copy `.env.example` to `.env` and update with your values:
 
@@ -56,7 +62,7 @@ ADX_CLUSTER_URL="https://#####.#####.kusto.windows.net"
 ADX_DATABASE="######"
 ```
 
-### 3. Running the Application
+### 4. Running the Application
 
 #### Option A: Enhanced Launcher (Recommended)
 
