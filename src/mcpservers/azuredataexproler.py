@@ -16,8 +16,8 @@ class ADXConfig:
     database: str
 
 config = ADXConfig(
-    cluster_url=os.environ.get("ADX_CLUSTER_URL", ""),
-    database=os.environ.get("ADX_DATABASE", ""),
+    cluster_url=os.environ.get("ADX_CLUSTER_URL", "https://help.kusto.windows.net/"),
+    database=os.environ.get("ADX_DATABASE", "SampleLogs"),
 )
 
 def get_kusto_client() -> KustoClient:

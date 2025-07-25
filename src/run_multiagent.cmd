@@ -34,9 +34,19 @@ if /i "%CHECKPORTS%"=="y" (
 echo Starting services with venv: %VENV_PATH%
 echo.
 
+REM Start MCP servers
+echo Starting Weather MCP Server...
+start "Weather MCP" cmd /k "call %VENV_PATH%\Scripts\activate && python ./mcpservers/weather.py"
+
+echo Starting LocalTime MCP Server...
+start "LocalTime MCP" cmd /k "call %VENV_PATH%\Scripts\activate && python ./mcpservers/localtime.py"
+
+echo Starting Azure Data Explorer MCP Server...
+start "Azure Data Explorer MCP" cmd /k "call %VENV_PATH%\Scripts\activate && python ./mcpservers/azuredataexproler.py"
+
 REM Start backend server
 echo Starting Backend Server...
-start "Backend Server" cmd /k "call %VENV_PATH%\Scripts\activate && python ./backend/agent_rag.py"
+start "Backend Server" cmd /k "call %VENV_PATH%\Scripts\activate && python ./multiagent/multiagent_group.py"
 
 REM Wait a moment for servers to start
 timeout /t 3 /nobreak >nul

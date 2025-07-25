@@ -11,6 +11,13 @@ This project demonstrates a Semantic Kernel implementation with FastAPI backend,
 
 ### 1. Environment Setup
 
+
+**Install Az Cli**
+Follow guide in the [Document](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) to install `az cli`
+
+
+**Environment**
+
 Create a Python venv at the root of the project and install dependencies:
 
 ```bash
@@ -112,7 +119,7 @@ The application consists of multiple services:
    **Response:**
    ```json
    {
-     "response": "The Payment Card Industry Data Security Standard (PCI DSS) version 4.0 is organized into 12 main requirements, often referred to as \"controls.\" Each requirement contains multiple sub-requirements and testing procedures. Here is a high-level list of the 12 core PCI DSS controls:\n\n1. Install and maintain network security controls.\n2. Apply secure configurations to all system components.\n3. Protect stored account data.\n4. Protect cardholder data with strong cryptography during transmission over open, public networks.\n5. Protect all systems and networks from malicious software.\n6. Develop and maintain secure systems and software.\n7. Restrict access to system components and cardholder data by business need to know.\n8. Identify users and authenticate access to system components.\n9. Restrict physical access to cardholder data.\n10. Log and monitor all access to system components and cardholder data.\n11. Test security of systems and networks regularly.\n12. Support information security with organizational policies and programs.\n\nEach of these requirements includes detailed controls and testing procedures to ensure the security of cardholder data and the cardholder data environment (CDE). If you need a breakdown of the sub-requirements or details for a specific control, let me know!",
+     "response": "The Payment Card Industry Data Security Standard (PCI DSS) version 4.0 is ...... kdown of the sub-requirements or details for a specific control, let me know!",
      "thread_id": "thread_Jeg8fCvvNlfk9CTUQQohZvuY",
      "agent_id": "asst_LuzQe28Sa9yNh2J9zRpA6HN8"
    }

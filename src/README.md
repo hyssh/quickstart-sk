@@ -2,19 +2,11 @@
 
 This directory contains multiple ways to efficiently run the Chainlit application with its MCP servers.
 
-## Quick Start
-
-### Option 1: Enhanced Batch Script (Windows)
-```cmd
-run_chainlit.cmd
-```
-
-### Option 2: Python Launcher (Cross-platform)
-```bash
-python launcher.py
-```
 
 ## Environment Setup
+
+### Install Az Cli
+Follow guide in the [Document](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) to install `az cli`
 
 ### Creating and Activating a Python venv
 
@@ -31,6 +23,18 @@ source ../.venv/bin/activate
 
 # Install requirements
 pip install -r ../requirements.txt
+```
+
+## Quick Start
+
+### Option 1: Enhanced Batch Script (Windows)
+```cmd
+run_chainlit.cmd
+```
+
+### Option 2: Python Launcher (Cross-platform)
+```bash
+python launcher.py
 ```
 
 ## Services Started

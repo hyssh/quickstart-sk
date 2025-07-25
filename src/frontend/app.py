@@ -26,7 +26,7 @@ async def on_chat_start():
             "agent_id": None,
             "thread_id": None
         }
-        await cl.Message(content="Welcome! I am an intelligent AI Assistant running Semantic Kernel with MCPPlugins. How can I help you?", author="System").send()
+        await cl.Message(content="Welcome! I am an intelligent AI Assistant running Semantic Kernel with MCPPlugins.\nHow can I help you?", author="System").send()
         return
         
     # If it's an existing session
