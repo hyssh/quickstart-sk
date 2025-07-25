@@ -5,7 +5,6 @@ This project demonstrates a Semantic Kernel implementation with FastAPI backend,
 ## Requirements
 
 - Python 3.10+
-- Anaconda/Miniconda
 - Azure AI Foundry project
 
 ## Quick Start
