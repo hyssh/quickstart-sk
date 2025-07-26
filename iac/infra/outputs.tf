@@ -3,11 +3,6 @@ output "resource_group_name" {
   value       = azurerm_resource_group.main.name
 }
 
-output "ai_project_name" {
-  description = "Azure AI Foundry Project name"
-  value       = azurerm_machine_learning_workspace.ai_project.name
-}
-
 output "ai_services_endpoint" {
   description = "AI Services endpoint"
   value       = azurerm_cognitive_account.ai_services.endpoint
@@ -28,16 +23,6 @@ output "openai_key" {
   description = "Azure OpenAI primary key"
   value       = azurerm_cognitive_account.openai.primary_access_key
   sensitive   = true
-}
-
-output "ai_project_discovery_url" {
-  description = "Azure AI Project discovery URL"
-  value       = azurerm_machine_learning_workspace.ai_project.discovery_url
-}
-
-output "project_connection_string" {
-  description = "Project connection string for AI Foundry"
-  value       = "${azurerm_resource_group.main.location}.api.azureml.ms;${data.azurerm_client_config.current.subscription_id};${azurerm_resource_group.main.name};${azurerm_machine_learning_workspace.ai_project.name}"
 }
 
 output "search_endpoint" {

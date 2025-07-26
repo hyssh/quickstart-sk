@@ -64,12 +64,6 @@ resource "azurecaf_name" "kusto_cluster" {
   suffixes      = [var.environment]
 }
 
-resource "azurecaf_name" "ai_project" {
-  name          = local.project_name
-  resource_type = "azurerm_machine_learning_workspace"
-  suffixes      = ["aiproject", var.environment]
-}
-
 # Resource Group
 resource "azurerm_resource_group" "main" {
   name     = azurecaf_name.resource_group.result
@@ -279,28 +273,5 @@ resource "azurerm_container_registry" "acr" {
   tags = {
     Environment = var.environment
     Project     = local.project_name
-  }
-}
-
-# Azure AI Foundry Project (Machine Learning Workspace)
-resource "azurerm_machine_learning_workspace" "ai_project" {
-  name                    = azurecaf_name.ai_project.result
-  location                = azurerm_resource_group.main.location
-  resource_group_name     = azurerm_resource_group.main.name
-  application_insights_id = azurerm_application_insights.ai_insights.id
-  key_vault_id            = azurerm_key_vault.kv.id
-  storage_account_id      = azurerm_storage_account.ai_storage.id
-  container_registry_id   = azurerm_container_registry.acr.id
-
-  description = "Azure AI Foundry Project for ${local.project_name}"
-
-  identity {
-    type = "SystemAssigned"
-  }
-
-  tags = {
-    Environment = var.environment
-    Project     = local.project_name
-    Type        = "AIProject"
   }
 }
