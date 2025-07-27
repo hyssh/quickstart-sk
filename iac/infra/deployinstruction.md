@@ -1,19 +1,12 @@
 Deployment Instructions
 
-1.Install Terraform (if not already installed):
-winget install HashiCorp.Terraform
+Open Azure Cloud Shell with Powershell from Azure Portal and execute the following scripts in sequence
 
-2.Initialize Terraform:
-terraform init
+# Clean any previous state
+.\clean-terraform.ps1
 
-3.Validate the configuration:
-terraform validate
-
-4.Plan the deployment:
-terraform plan
-
-5.Apply the configuration:
-terraform apply -auto-approve
+# Deploy fresh
+.\deploy-terraform.ps1
 
 After successful deployment, you can view your resources in the Azure Portal at: https://portal.azure.com/#@/resource/subscriptions/YOUR_SUBSCRIPTION_ID/resourceGroups/
 
@@ -35,7 +28,9 @@ Storage Account
 
 Key Vault
 
-Azure AI Project (Machine Learning Workspace)
+Azure AI services multi-service account
+
+Azure AI Foundry
 
 All resources will be properly named using the azurecaf provider and tagged for easy management.
 

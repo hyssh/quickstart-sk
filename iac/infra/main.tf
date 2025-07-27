@@ -8,6 +8,10 @@ terraform {
       source  = "aztfmod/azurecaf"
       version = "~>1.2"
     }
+    azapi = {
+      source  = "Azure/azapi"
+      version = "~>1.0"
+    }
   }
 }
 
@@ -64,6 +68,18 @@ resource "azurecaf_name" "kusto_cluster" {
   suffixes      = [var.environment]
 }
 
+resource "azurecaf_name" "ai_foundry" {
+  name          = local.project_name
+  resource_type = "azurerm_cognitive_account"
+  suffixes      = ["foundry", var.environment]
+}
+
+resource "azurecaf_name" "ai_foundry_project" {
+  name          = local.project_name
+  resource_type = "azurerm_cognitive_account"
+  suffixes      = ["project", var.environment]
+}
+
 # Resource Group
 resource "azurerm_resource_group" "main" {
   name     = azurecaf_name.resource_group.result
@@ -83,20 +99,6 @@ resource "azurerm_cognitive_account" "ai_services" {
   resource_group_name = azurerm_resource_group.main.name
   kind                = "CognitiveServices"
   sku_name            = var.ai_services_sku
-
-  tags = {
-    Environment = var.environment
-    Project     = local.project_name
-  }
-}
-
-# Azure OpenAI Service (separate from multi-service for model deployments)
-resource "azurerm_cognitive_account" "openai" {
-  name                = "${local.project_name}-openai-${var.environment}"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  kind                = "OpenAI"
-  sku_name            = var.openai_sku
 
   tags = {
     Environment = var.environment
@@ -269,6 +271,94 @@ resource "azurerm_container_registry" "acr" {
   location            = azurerm_resource_group.main.location
   sku                 = "Basic"
   admin_enabled       = true
+
+  tags = {
+    Environment = var.environment
+    Project     = local.project_name
+  }
+}
+
+##########
+# Create AI Foundry resource
+##########
+
+# Create the AI Foundry resource
+resource "azapi_resource" "ai_foundry" {
+  type                      = "Microsoft.CognitiveServices/accounts@2025-04-01-preview"
+  name                      = azurecaf_name.ai_foundry.result
+  parent_id                 = azurerm_resource_group.main.id
+  location                  = var.location
+  schema_validation_enabled = false
+
+  body = {
+    kind = "AIServices"
+    sku = {
+      name = "S0"
+    }
+    identity = {
+      type = "SystemAssigned"
+    }
+
+    properties = {
+      # Support both Entra ID and API Key authentication for Cognitive Services account
+      disableLocalAuth = false
+
+      # Specifies that this is an AI Foundry resource
+      allowProjectManagement = true
+
+      # Set custom subdomain name for DNS names created for this Foundry resource
+      customSubDomainName = lower(replace(azurecaf_name.ai_foundry.result, "-", ""))
+    }
+  }
+
+  tags = {
+    Environment = var.environment
+    Project     = local.project_name
+  }
+}
+
+# Create a deployment for OpenAI's GPT-4o in the AI Foundry resource
+resource "azurerm_cognitive_deployment" "aifoundry_deployment_gpt_4o" {
+  depends_on = [
+    azapi_resource.ai_foundry
+  ]
+
+  name                 = "gpt-4o"
+  cognitive_account_id = azapi_resource.ai_foundry.id
+
+  scale {
+    type     = "GlobalStandard"
+    capacity = 1
+  }
+
+  model {
+    format  = "OpenAI"
+    name    = "gpt-4o"
+    version = "2024-08-06"
+  }
+}
+
+# Create AI Foundry project
+resource "azapi_resource" "ai_foundry_project" {
+  type                      = "Microsoft.CognitiveServices/accounts/projects@2025-04-01-preview"
+  name                      = azurecaf_name.ai_foundry_project.result
+  parent_id                 = azapi_resource.ai_foundry.id
+  location                  = var.location
+  schema_validation_enabled = false
+
+  body = {
+    sku = {
+      name = "S0"
+    }
+    identity = {
+      type = "SystemAssigned"
+    }
+
+    properties = {
+      displayName = "AI Foundry Project"
+      description = "My first AI Foundry project"
+    }
+  }
 
   tags = {
     Environment = var.environment
